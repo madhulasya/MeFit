@@ -1,0 +1,233 @@
+{
+  "info": {
+    "name": "MEFIT API",
+    "description": "Postman collection for MEFIT backend (local). Uses environment variables: baseUrl, token, userId, profileId, programId, workoutId, exerciseId.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{token}}", "type": "string" }
+    ]
+  },
+  "item": [
+    {
+      "name": "Docs",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/docs",
+          "host": ["{{baseUrl}}"],
+          "path": ["docs"]
+        }
+      }
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"Secret123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/user",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "user"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Registered (201 or 200)', function () { pm.expect([200,201]).to.include(pm.response.code); });",
+                  "var json = pm.response.json ? pm.response.json() : {};",
+                  "if (json.token) pm.environment.set('token', json.token);",
+                  "if (json.user && json.user._id) pm.environment.set('userId', json.user._id);",
+                  "if (json._id) pm.environment.set('userId', json._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"Secret123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/api/user/login", "host": ["{{baseUrl}}"], "path": ["api","user","login"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login 200', function(){ pm.response.to.have.status(200); });",
+                  "var json = pm.response.json();",
+                  "if (json.token) pm.environment.set('token', json.token);",
+                  "if (json.user && json.user._id) pm.environment.set('userId', json.user._id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get current user",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/user", "host": ["{{baseUrl}}"], "path": ["api","user"] } }
+        },
+        {
+          "name": "Get user by id",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["api","user","{{userId}}"] } }
+        },
+        {
+          "name": "Update user",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"New Name\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/api/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["api","user","{{userId}}"] }
+          }
+        },
+        {
+          "name": "Update password",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"currentPassword\": \"Secret123\",\n  \"newPassword\": \"Stronger456\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/api/user/{{userId}}/update_password", "host": ["{{baseUrl}}"], "path": ["api","user","{{userId}}","update_password"] }
+          }
+        },
+        {
+          "name": "Delete user",
+          "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["api","user","{{userId}}"] } }
+        },
+        {
+          "name": "2FA setup",
+          "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/api/user/2fa/setup", "host": ["{{baseUrl}}"], "path": ["api","user","2fa","setup"] } }
+        },
+        {
+          "name": "2FA verify",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"token\": \"123456\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/api/user/2fa/verify", "host": ["{{baseUrl}}"], "path": ["api","user","2fa","verify"] }
+          }
+        },
+        {
+          "name": "2FA verify login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"token\": \"123456\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/api/user/2fa/verify-login", "host": ["{{baseUrl}}"], "path": ["api","user","2fa","verify-login"] }
+          }
+        },
+        {
+          "name": "Get /me",
+          "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/user/me", "host": ["{{baseUrl}}"], "path": ["api","user","me"] } }
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Create profile",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"weight\": 72,\n  \"height\": 175,\n  \"gender\": \"Other\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/api/profile", "host": ["{{baseUrl}}"], "path": ["api","profile"] }
+          },
+          "event": [ { "listen": "test", "script": { "exec": [ "var j = pm.response.json ? pm.response.json() : {}; if (j && (j._id || j.id)) pm.environment.set('profileId', j._id || j.id);" ], "type": "text/javascript" } } ]
+        },
+        { "name": "Get profile", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/profile/{{profileId}}", "host": ["{{baseUrl}}"], "path": ["api","profile","{{profileId}}"] } } },
+        { "name": "Update profile", "request": { "method": "PATCH", "header": [ { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"weight\": 73\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/profile/{{profileId}}", "host": ["{{baseUrl}}"], "path": ["api","profile","{{profileId}}"] } } },
+        { "name": "Delete profile", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/profile/{{profileId}}", "host": ["{{baseUrl}}"], "path": ["api","profile","{{profileId}}"] } } }
+      ]
+    },
+    {
+      "name": "Program",
+      "item": [
+        {
+          "name": "Create program",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Strength 101\",\n  \"category\": \"Strength\",\n  \"description\": \"Intro plan\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/api/program", "host": ["{{baseUrl}}"], "path": ["api","program"] }
+          },
+          "event": [ { "listen": "test", "script": { "exec": [ "var j = pm.response.json(); if (j && (j._id || j.id)) pm.environment.set('programId', j._id || j.id);" ], "type": "text/javascript" } } ]
+        },
+        { "name": "Get program", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/program/{{programId}}", "host": ["{{baseUrl}}"], "path": ["api","program","{{programId}}"] } } },
+        { "name": "Update program", "request": { "method": "PATCH", "header": [ { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"description\": \"Updated\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/program/{{programId}}", "host": ["{{baseUrl}}"], "path": ["api","program","{{programId}}"] } } },
+        { "name": "Delete program", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/program/{{programId}}", "host": ["{{baseUrl}}"], "path": ["api","program","{{programId}}"] } } }
+      ]
+    },
+    {
+      "name": "Workout",
+      "item": [
+        {
+          "name": "Create workout",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Leg Day\",\n  \"type\": \"Hypertrophy\",\n  \"sets\": 4,\n  \"exercises\": [\"{{exerciseId}}\"],\n  \"program\": \"{{programId}}\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/api/workout", "host": ["{{baseUrl}}"], "path": ["api","workout"] }
+          },
+          "event": [ { "listen": "test", "script": { "exec": [ "var j = pm.response.json(); if (j && (j._id || j.id)) pm.environment.set('workoutId', j._id || j.id);" ], "type": "text/javascript" } } ]
+        },
+        { "name": "Get workout", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/workout/{{workoutId}}", "host": ["{{baseUrl}}"], "path": ["api","workout","{{workoutId}}"] } } },
+        { "name": "Update workout", "request": { "method": "PATCH", "header": [ { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"sets\": 5\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/workout/{{workoutId}}", "host": ["{{baseUrl}}"], "path": ["api","workout","{{workoutId}}"] } } },
+        { "name": "Delete workout", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/workout/{{workoutId}}", "host": ["{{baseUrl}}"], "path": ["api","workout","{{workoutId}}"] } } }
+      ]
+    },
+    {
+      "name": "Exercise",
+      "item": [
+        { "name": "List exercises", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/exercise", "host": ["{{baseUrl}}"], "path": ["api","exercise"] } } },
+        {
+          "name": "Create exercise",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Squat\",\n  \"description\": \"Barbell back squat\",\n  \"targetMuscleGroup\": \"Legs\",\n  \"image\": \"https://example.com/squat.png\",\n  \"video\": \"https://example.com/squat.mp4\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/api/exercise", "host": ["{{baseUrl}}"], "path": ["api","exercise"] }
+          },
+          "event": [ { "listen": "test", "script": { "exec": [ "var j = pm.response.json(); if (j && (j._id || j.id)) pm.environment.set('exerciseId', j._id || j.id);" ], "type": "text/javascript" } } ]
+        },
+        { "name": "Get exercise", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/exercise/{{exerciseId}}", "host": ["{{baseUrl}}"], "path": ["api","exercise","{{exerciseId}}"] } } },
+        { "name": "Update exercise", "request": { "method": "PATCH", "header": [ { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"description\": \"Updated description\"\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/api/exercise/{{exerciseId}}", "host": ["{{baseUrl}}"], "path": ["api","exercise","{{exerciseId}}"] } } },
+        { "name": "Delete exercise", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/exercise/{{exerciseId}}", "host": ["{{baseUrl}}"], "path": ["api","exercise","{{exerciseId}}"] } } }
+      ]
+    },
+    {
+      "name": "Goal (501)",
+      "item": [
+        { "name": "Create goal (501)", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/api/goal", "host": ["{{baseUrl}}"], "path": ["api","goal"] } } },
+        { "name": "Get goal (501)", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/goal/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","goal","{{id}}"] } } },
+        { "name": "Update goal (501)", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/api/goal/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","goal","{{id}}"] } } },
+        { "name": "Delete goal (501)", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/goal/{{id}}", "host": ["{{baseUrl}}"], "path": ["api","goal","{{id}}"] } } }
+      ]
+    }
+  ]
+}
