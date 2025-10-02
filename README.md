@@ -121,9 +121,5 @@ npm start
 cd mefit_frontend
 npm start
 ---
-## 🚀 Deployment
-
-- **Frontend:** [MeFit Live Demo](https://precious-stardust-7a08e7.netlify.app/)  
-- **Backend:** Deployment of backend:https://siter-fullstack-web-4.onrender.com/
 
 
