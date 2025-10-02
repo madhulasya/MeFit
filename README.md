@@ -57,12 +57,36 @@ During the development of MeFit, I gained valuable experience in:
 - Integrating frontend and backend for seamless data flow and real-time updates.
 - 
 ---
+## 📑 API Documentation
+
+The API is documented using **Swagger**.  
+Once the backend is running, visit:
+
+👉 [http://localhost:5000/docs](http://localhost:5000/docs)
+
+### Example Endpoints:
+- **POST** `/api/user/register` → Register a new user  
+- **POST** `/api/user/login` → Login and receive JWT token  
+- **GET** `/api/profile` → Fetch user profile (requires JWT)  
+- **POST** `/api/goal` → Create a new fitness goal  
+- **GET** `/api/workout` → Get all workouts  
+- **GET** `/api/exercise` → Get list of exercises
+
+ ---
 ## 🚀 Deployment
 
 You can check out the deployed version of MeFit here:  
 👉 [MeFit Live Demo](https://precious-stardust-7a08e7.netlify.app/)
 ---
+
+## 📞 Contact
+
+For any questions or collaborations regarding MeFit, you can reach out to:
+
+- **Email:** madhulasya509@.gmail.com  
  
+- **LinkedIn:** [Your LinkedIn Profile](www.linkedin.com/in/madhu-lasya-kommalapati-403229347)
+
 ## 🛠️ Installation Instructions
 
 Follow these steps to run the project locally:
@@ -102,26 +126,4 @@ npm start
 - **Frontend:** [MeFit Live Demo](https://precious-stardust-7a08e7.netlify.app/)  
 - **Backend:** Deployment of backend:https://siter-fullstack-web-4.onrender.com/
 
-## 📑 API Documentation
 
-The API is documented using **Swagger**.  
-Once the backend is running, visit:
-
-👉 [http://localhost:5000/docs](http://localhost:5000/docs)
-
-### Example Endpoints:
-- **POST** `/api/user/register` → Register a new user  
-- **POST** `/api/user/login` → Login and receive JWT token  
-- **GET** `/api/profile` → Fetch user profile (requires JWT)  
-- **POST** `/api/goal` → Create a new fitness goal  
-- **GET** `/api/workout` → Get all workouts  
-- **GET** `/api/exercise` → Get list of exercises
-
- ---
-## 📞 Contact
-
-For any questions or collaborations regarding MeFit, you can reach out to:
-
-- **Email:** madhulasya509@.gmail.com  
- 
-- **LinkedIn:** [Your LinkedIn Profile](www.linkedin.com/in/madhu-lasya-kommalapati-403229347)
