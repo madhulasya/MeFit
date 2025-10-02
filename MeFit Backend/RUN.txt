@@ -1,0 +1,8 @@
+Requirements:
+- Node.js 18+ and npm
+
+Steps:
+1) npm install
+2) copy .env.example to .env.development and fill values (MONGODB_URI, JWT_SECRET_KEY)
+3) npm run dev
+4) Open http://localhost:5000/docs
